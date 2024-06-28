@@ -5,6 +5,7 @@ type TTodo = {
   title: string;
   description: string;
   isCompleted?: boolean;
+  priority: string;
 };
 
 type TInitialState = {
@@ -31,8 +32,13 @@ const todoSlice = createSlice({
       state.todos = state.todos.filter((item) => item.id !== task?.id);
       state.todos.push(task as TTodo);
     },
+    updateTodo: (state, action: PayloadAction<TTodo>) => {
+      state.todos = state.todos.filter((item) => item.id !== action.payload.id);
+      state.todos.push(action.payload);
+    },
   },
 });
 
-export const { addTodo, removeTodo, toggleComplete } = todoSlice.actions;
+export const { addTodo, removeTodo, toggleComplete, updateTodo } =
+  todoSlice.actions;
 export default todoSlice.reducer;
