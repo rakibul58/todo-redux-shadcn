@@ -10,6 +10,7 @@ type TTodo = {
 
 type TInitialState = {
   todos: TTodo[];
+  filteredTodos?: TTodo[];
 };
 
 const initialState: TInitialState = {
@@ -36,9 +37,15 @@ const todoSlice = createSlice({
       state.todos = state.todos.filter((item) => item.id !== action.payload.id);
       state.todos.push(action.payload);
     },
+    filterTodo: (state, action: PayloadAction<string>) => {
+      state.filteredTodos = state.todos.filter(
+        (item) => item.priority === action.payload
+      );
+      action.payload === "none" && delete state.filteredTodos;
+    },
   },
 });
 
-export const { addTodo, removeTodo, toggleComplete, updateTodo } =
+export const { addTodo, removeTodo, toggleComplete, updateTodo, filterTodo } =
   todoSlice.actions;
 export default todoSlice.reducer;
