@@ -20,32 +20,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useAppDispatch } from "../../redux/hook";
+// import { useAppDispatch } from "../../redux/hook";
 import { TTodoCardProps } from "./TodoCard";
-import { updateTodo } from "../../redux/features/todoSlice";
+// import { updateTodo } from "../../redux/features/todoSlice";
+import { useUpdateTodoMutation } from "../../redux/api/api";
 
 const UpdateTodoModal = ({
   title,
   description,
-  id,
+  _id,
   priority,
   isCompleted,
 }: TTodoCardProps) => {
   const [task, setTask] = useState(title);
   const [newDescription, setNewDescription] = useState(description);
   const [newPriority, setNewPriority] = useState(priority);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const [updateTodo] = useUpdateTodoMutation();
 
   const handleUpdate = (e: FormEvent) => {
     e.preventDefault();
-    const newTodo = {
+    // const newTodo = {
+    //   title: task,
+    //   description: newDescription,
+    //   priority: newPriority,
+    //   id,
+    //   isCompleted,
+    // };
+    // dispatch(updateTodo(newTodo));
+    const taskData = {
       title: task,
       description: newDescription,
       priority: newPriority,
-      id,
       isCompleted,
     };
-    dispatch(updateTodo(newTodo));
+
+    const options = {
+      id: _id,
+      data: taskData,
+    };
+
+    updateTodo(options);
   };
 
   return (

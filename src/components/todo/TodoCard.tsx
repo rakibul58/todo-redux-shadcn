@@ -1,12 +1,16 @@
-import { removeTodo, toggleComplete } from "../../redux/features/todoSlice";
-import { useAppDispatch } from "../../redux/hook";
+import {
+  useDeleteTodoMutation,
+  useUpdateTodoMutation,
+} from "../../redux/api/api";
+// import { removeTodo, toggleComplete } from "../../redux/features/todoSlice";
+// import { useAppDispatch } from "../../redux/hook";
 import { Button } from "../ui/button";
 import UpdateTodoModal from "./UpdateTodoModal";
 
 export type TTodoCardProps = {
   title: string;
   description: string;
-  id: string;
+  _id: string;
   isCompleted?: boolean;
   priority: string;
 };
@@ -14,14 +18,31 @@ export type TTodoCardProps = {
 const TodoCard = ({
   title,
   description,
-  id,
+  _id,
   isCompleted,
   priority,
 }: TTodoCardProps) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+
+  const [updateTodo] = useUpdateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation();
 
   const toggleState = () => {
-    dispatch(toggleComplete(id));
+    // dispatch(toggleComplete(id));
+
+    const taskData = {
+      title,
+      description,
+      priority,
+      isCompleted: !isCompleted,
+    };
+
+    const options = {
+      id: _id,
+      data: taskData,
+    };
+
+    updateTodo(options);
   };
 
   return (
@@ -31,22 +52,32 @@ const TodoCard = ({
         type="checkbox"
         name="complete"
         id="complete"
+        defaultChecked={isCompleted}
+        className="mr-5"
       />
-      <p className="font-semibold">{title}</p>
-      <p className="font-semibold">
-        {priority.charAt(0).toUpperCase() + priority.slice(1)}
-      </p>
-      {/* <p>Time</p> */}
-      <div>
+      <p className="font-semibold flex-1">{title}</p>
+      <div className={`flex-1 flex items-center gap-2`}>
+        <div
+          className={`size-3 rounded-full  ${
+            priority === "high" ? "bg-red-500" : null
+          } ${priority === "medium" ? "bg-yellow-500" : null} ${
+            priority === "low" ? "bg-green-500" : null
+          }`}
+        ></div>
+        <p className="font-semibold">
+          {priority.charAt(0).toUpperCase() + priority.slice(1)}
+        </p>
+      </div>
+      <div className="flex-1 mr-5 ml-2">
         {isCompleted ? (
           <p className="text-green-500">Done</p>
         ) : (
           <p className="text-yellow-500">Pending</p>
         )}
       </div>
-      <p>{description}</p>
+      <p className="flex-[2]">{description}</p>
       <div className="space-x-3">
-        <Button onClick={() => dispatch(removeTodo(id))} className="bg-red-500">
+        <Button onClick={() => deleteTodo(_id)} className="bg-red-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -65,7 +96,7 @@ const TodoCard = ({
         <UpdateTodoModal
           title={title}
           description={description}
-          id={id}
+          _id={_id}
           isCompleted={isCompleted}
           priority={priority}
         />

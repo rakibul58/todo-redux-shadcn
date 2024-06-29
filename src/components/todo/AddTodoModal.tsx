@@ -11,8 +11,8 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useAppDispatch } from "../../redux/hook";
-import { addTodo } from "../../redux/features/todoSlice";
+// import { useAppDispatch } from "../../redux/hook";
+// import { addTodo } from "../../redux/features/todoSlice";
 import {
   Select,
   SelectContent,
@@ -22,25 +22,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useAddTodoMutation } from "../../redux/api/api";
 
 const AddTodoModal = () => {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
-  const dispatch = useAppDispatch();
+
+  // const dispatch = useAppDispatch();
+
+  const [addTodo] = useAddTodoMutation();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    const randomString = Math.random().toString(36).substring(2, 7);
-
     const taskDetails = {
-      id: randomString,
       title: task,
       description,
+      isCompleted: false,
       priority,
     };
-    dispatch(addTodo(taskDetails));
+
+    addTodo(taskDetails);
+
+    // dispatch(addTodo(taskDetails));
   };
 
   return (
